@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✂️ TÓC ĐẸP SALON - Hệ thống đặt lịch & tích điểm</title>
+    <title>✂️ ELITE BARBERSHOP - Đặt lịch & Tích điểm thông minh</title>
+    <meta name="description" content="Elite Barbershop - Salon tóc cao cấp với hệ thống đặt lịch online và tích điểm tự động. Trải nghiệm dịch vụ đẳng cấp.">
+    
     <style>
         * {
             margin: 0;
@@ -11,239 +13,549 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #d4af37;
+            --accent-color: #ff6b35;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-dark: #0f0f0f;
+            --bg-light: #f8f9fa;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            color: var(--text-light);
+            background: var(--bg-dark);
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #2d2d2d, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
         }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.2em;
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        /* Social Links */
-        .social-links {
-            margin: 20px 0;
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 0 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary {
+            background: var(--gradient-2);
+            color: white;
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .cta-secondary:hover {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* Contact Bar */
+        .contact-bar {
+            background: var(--card-bg);
+            padding: 1rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 3rem;
+            flex-wrap: wrap;
         }
 
-        .social-btn {
-            display: inline-flex;
+        .contact-item {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            font-weight: bold;
+            gap: 0.5rem;
+            color: var(--text-light);
         }
 
-        .social-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        .contact-item i {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
         }
 
-        .social-btn.line { background: linear-gradient(45deg, #00c300, #00b300); }
-        .social-btn.ig { background: linear-gradient(45deg, #fd5949, #d6249f); }
-        .social-btn.tiktok { background: linear-gradient(45deg, #25f4ee, #fe2c55); }
-        .social-btn.fb { background: linear-gradient(45deg, #4267b2, #365899); }
+        /* Services Section */
+        .services {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-        /* Main Content */
-        .main-content {
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 3rem;
+            background: var(--gradient-3);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .service-card {
+            background: var(--card-bg);
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+            border-color: var(--secondary-color);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .service-price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .service-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Main Features */
+        .features {
+            padding: 5rem 2rem;
+            background: rgba(30, 30, 30, 0.5);
+        }
+
+        .features-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .feature-card:hover {
             transform: translateY(-5px);
+            box-shadow: var(--shadow);
         }
 
-        .card-icon {
-            font-size: 3em;
+        .feature-icon {
+            font-size: 4rem;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 2rem;
+            background: var(--gradient-3);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .card h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
+        .feature-title {
+            font-size: 2rem;
+            font-weight: 700;
             text-align: center;
-            font-size: 1.8em;
+            margin-bottom: 2rem;
+            color: var(--text-light);
         }
 
         /* Form Styles */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
-        label {
+        .form-label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
 
-        input, select, textarea {
+        .form-input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text-light);
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        input:focus, select:focus, textarea:focus {
+        .form-input:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
-        .btn {
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--gradient-2);
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:hover {
+        .form-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
         }
 
-        .btn:disabled {
+        .form-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-btn.secondary {
+            background: var(--gradient-3);
+            margin-top: 1rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            font-weight: 500;
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(46, 160, 67, 0.15);
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: #f87171;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: #60a5fa;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: #fbbf24;
         }
 
         /* Points Display */
         .points-display {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
+            background: var(--gradient-1);
+            border-radius: 20px;
+            padding: 2rem;
             text-align: center;
-            margin: 20px 0;
+            margin: 2rem 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .points-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
         }
 
         .points-number {
-            font-size: 3em;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 1rem 0;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .progress-container {
+            margin: 2rem 0;
+            position: relative;
         }
 
         .progress-bar {
+            width: 100%;
+            height: 12px;
             background: rgba(255, 255, 255, 0.2);
-            height: 20px;
-            border-radius: 10px;
+            border-radius: 6px;
             overflow: hidden;
-            margin: 20px 0;
         }
 
         .progress-fill {
-            background: linear-gradient(45deg, #00c851, #007e33);
             height: 100%;
-            border-radius: 10px;
-            transition: width 0.8s ease;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            border-radius: 6px;
+            transition: width 1s ease;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
         }
 
         /* QR Display */
         .qr-display {
             text-align: center;
-            padding: 20px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #qrcode {
-            margin: 20px auto;
-            display: none;
-        }
-
-        /* Alert Messages */
-        .alert {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-info {
-            background: #cce7ff;
-            color: #004085;
-            border: 1px solid #b8daff;
+        .qr-image {
+            max-width: 250px;
+            height: auto;
+            border-radius: 15px;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--secondary-color);
         }
 
         /* Loading Spinner */
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--secondary-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 2rem auto;
         }
 
         @keyframes spin {
@@ -251,188 +563,392 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Hidden elements */
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            padding: 3rem 2rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .loyalty-program {
+            background: var(--gradient-2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .loyalty-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .loyalty-desc {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--gradient-3);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .hidden {
             display: none;
         }
 
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
+            .nav-links {
+                display: none;
             }
-            
-            .social-links {
-                flex-wrap: wrap;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
+
+            .features-grid {
                 grid-template-columns: 1fr;
             }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--secondary-color);
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="logo">✂️</div>
-            <h1>TÓC ĐẸP SALON</h1>
-            <p class="subtitle">Hệ thống đặt lịch & tích điểm thông minh</p>
-            
-            <!-- Social Media Links -->
-            <div class="social-links">
-                <a href="#" class="social-btn line">📱 Line Official</a>
-                <a href="#" class="social-btn ig">📸 Instagram</a>
-                <a href="#" class="social-btn tiktok">🎵 TikTok</a>
-                <a href="#" class="social-btn fb">👥 Facebook</a>
-            </div>
-        </header>
+    <div class="bg-animation"></div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Đặt lịch hẹn -->
-            <div class="card">
-                <div class="card-icon">📅</div>
-                <h2>Đặt lịch hẹn</h2>
-                
-                <form id="bookingForm">
-                    <div class="form-group">
-                        <label for="customerName">Họ tên *</label>
-                        <input type="text" id="customerName" required placeholder="Nhập họ tên đầy đủ">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="customerPhone">Số điện thoại *</label>
-                        <input type="tel" id="customerPhone" required placeholder="0912345678">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="bookingDate">Ngày hẹn *</label>
-                        <input type="date" id="bookingDate" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="bookingTime">Giờ hẹn *</label>
-                        <select id="bookingTime" required>
-                            <option value="">Chọn giờ</option>
-                            <option value="08:00">08:00</option>
-                            <option value="08:30">08:30</option>
-                            <option value="09:00">09:00</option>
-                            <option value="09:30">09:30</option>
-                            <option value="10:00">10:00</option>
-                            <option value="10:30">10:30</option>
-                            <option value="14:00">14:00</option>
-                            <option value="14:30">14:30</option>
-                            <option value="15:00">15:00</option>
-                            <option value="15:30">15:30</option>
-                            <option value="16:00">16:00</option>
-                            <option value="16:30">16:30</option>
-                            <option value="17:00">17:00</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service">Dịch vụ *</label>
-                        <select id="service" required>
-                            <option value="">Chọn dịch vụ</option>
-                            <option value="Cắt tóc nam">Cắt tóc nam - 100k</option>
-                            <option value="Cắt tóc nữ">Cắt tóc nữ - 150k</option>
-                            <option value="Gội + cắt + sấy">Gội + cắt + sấy - 200k</option>
-                            <option value="Nhuộm tóc">Nhuộm tóc - 300k</option>
-                            <option value="Uốn tóc">Uốn tóc - 400k</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="notes">Ghi chú</label>
-                        <textarea id="notes" rows="3" placeholder="Yêu cầu đặc biệt (tùy chọn)"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn" id="submitBooking">
-                        📅 Đặt lịch ngay
-                    </button>
-                </form>
-                
-                <div id="bookingResult" class="hidden"></div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">✂️ ELITE BARBERSHOP</div>
+            <ul class="nav-links">
+                <li><a href="#services">Dịch vụ</a></li>
+                <li><a href="#booking">Đặt lịch</a></li>
+                <li><a href="#loyalty">Tích điểm</a></li>
+                <li><a href="#contact">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ELITE BARBERSHOP</h1>
+            <p class="hero-subtitle">Trải nghiệm cắt tóc đẳng cấp với công nghệ tích điểm thông minh</p>
+            <div class="hero-cta">
+                <a href="#booking" class="cta-btn cta-primary">📅 Đặt lịch ngay</a>
+                <a href="#loyalty" class="cta-btn cta-secondary">🎁 Xem ưu đãi</a>
             </div>
-            
-            <!-- Tra cứu điểm thưởng -->
-            <div class="card">
-                <div class="card-icon">🎁</div>
-                <h2>Tra cứu điểm thưởng</h2>
-                
-                <div class="form-group">
-                    <label for="pointsPhone">Số điện thoại</label>
-                    <input type="tel" id="pointsPhone" placeholder="0912345678">
-                </div>
-                
-                <button type="button" class="btn" onclick="checkPoints()">
-                    🔍 Kiểm tra điểm
-                </button>
-                
-                <div id="pointsResult" class="hidden"></div>
+        </div>
+    </section>
+
+    <!-- Contact Bar -->
+    <div class="contact-bar">
+        <div class="contact-content">
+            <div class="contact-item">
+                <i>📍</i>
+                <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
             </div>
-            
-            <!-- QR Code cá nhân -->
-            <div class="card">
-                <div class="card-icon">📱</div>
-                <h2>QR Code cá nhân</h2>
-                
-                <div class="form-group">
-                    <label for="qrPhone">Số điện thoại</label>
-                    <input type="tel" id="qrPhone" placeholder="0912345678">
-                </div>
-                
-                <button type="button" class="btn" onclick="generateQR()">
-                    📱 Tạo QR Code
-                </button>
-                
-                <div id="qrResult" class="hidden">
-                    <div class="qr-display">
-                        <div id="qrcode"></div>
-                        <p>📱 <strong>Lưu QR này vào điện thoại</strong></p>
-                        <p>Đưa cho nhân viên để tích điểm nhanh!</p>
-                    </div>
-                </div>
+            <div class="contact-item">
+                <i>📞</i>
+                <span><a href="tel:0123456789" style="color: inherit; text-decoration: none;">0123 456 789</a></span>
+            </div>
+            <div class="contact-item">
+                <i>⏰</i>
+                <span>8:00 - 20:00 hàng ngày</span>
             </div>
         </div>
     </div>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2 class="section-title">DỊCH VỤ CHUYÊN NGHIỆP</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">👨‍🦱</div>
+                <h3 class="service-name">Cắt tóc nam</h3>
+                <div class="service-price">100.000đ</div>
+                <p class="service-desc">Tạo kiểu chuyên nghiệp với kỹ thuật hiện đại</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">👩‍🦱</div>
+                <h3 class="service-name">Cắt tóc nữ</h3>
+                <div class="service-price">150.000đ</div>
+                <p class="service-desc">Thiết kế kiểu tóc thời trang, phù hợp gương mặt</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🧴</div>
+                <h3 class="service-name">Gội + Cắt + Sấy</h3>
+                <div class="service-price">200.000đ</div>
+                <p class="service-desc">Combo chăm sóc hoàn chỉnh với sản phẩm cao cấp</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3 class="service-name">Nhuộm tóc</h3>
+                <div class="service-price">300.000đ</div>
+                <p class="service-desc">Màu sắc thời trang với công nghệ không hại tóc</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💇‍♀️</div>
+                <h3 class="service-name">Uốn tóc</h3>
+                <div class="service-price">400.000đ</div>
+                <p class="service-desc">Tạo kiểu uốn tự nhiên, bồng bềnh lâu dài</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">✨</div>
+                <h3 class="service-name">Combo VIP</h3>
+                <div class="service-price">500.000đ</div>
+                <p class="service-desc">Trải nghiệm dịch vụ cao cấp toàn diện</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Features -->
+    <section id="booking" class="features">
+        <div class="features-container">
+            <h2 class="section-title">HỆ THỐNG THÔNG MINH</h2>
+            <div class="features-grid">
+                <!-- Booking Feature -->
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 class="feature-title">Đặt lịch hẹn</h3>
+                    
+                    <form id="bookingForm">
+                        <div class="form-group">
+                            <label class="form-label" for="customerName">Họ tên *</label>
+                            <input type="text" id="customerName" class="form-input" required placeholder="Nhập họ tên đầy đủ">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="customerPhone">Số điện thoại *</label>
+                            <input type="tel" id="customerPhone" class="form-input" required placeholder="0912345678">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="bookingDate">Ngày hẹn *</label>
+                            <input type="date" id="bookingDate" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="bookingTime">Giờ hẹn *</label>
+                            <select id="bookingTime" class="form-input" required>
+                                <option value="">Chọn giờ</option>
+                                <option value="08:00">08:00</option>
+                                <option value="08:30">08:30</option>
+                                <option value="09:00">09:00</option>
+                                <option value="09:30">09:30</option>
+                                <option value="10:00">10:00</option>
+                                <option value="10:30">10:30</option>
+                                <option value="11:00">11:00</option>
+                                <option value="11:30">11:30</option>
+                                <option value="14:00">14:00</option>
+                                <option value="14:30">14:30</option>
+                                <option value="15:00">15:00</option>
+                                <option value="15:30">15:30</option>
+                                <option value="16:00">16:00</option>
+                                <option value="16:30">16:30</option>
+                                <option value="17:00">17:00</option>
+                                <option value="17:30">17:30</option>
+                                <option value="18:00">18:00</option>
+                                <option value="18:30">18:30</option>
+                                <option value="19:00">19:00</option>
+                                <option value="19:30">19:30</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="service">Dịch vụ *</label>
+                            <select id="service" class="form-input" required>
+                                <option value="">Chọn dịch vụ</option>
+                                <option value="Cắt tóc nam">Cắt tóc nam - 100k</option>
+                                <option value="Cắt tóc nữ">Cắt tóc nữ - 150k</option>
+                                <option value="Gội + cắt + sấy">Gội + cắt + sấy - 200k</option>
+                                <option value="Nhuộm tóc">Nhuộm tóc - 300k</option>
+                                <option value="Uốn tóc">Uốn tóc - 400k</option>
+                                <option value="Combo VIP">Combo VIP - 500k</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="notes">Ghi chú</label>
+                            <textarea id="notes" class="form-input" rows="3" placeholder="Yêu cầu đặc biệt (tùy chọn)"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-btn" id="submitBooking">
+                            📅 Đặt lịch ngay
+                        </button>
+                    </form>
+                    
+                    <div id="bookingResult" class="hidden"></div>
+                </div>
+
+                <!-- Points Feature -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3 class="feature-title">Tra cứu điểm thưởng</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="pointsPhone">Số điện thoại</label>
+                        <input type="tel" id="pointsPhone" class="form-input" placeholder="0912345678">
+                    </div>
+                    
+                    <button type="button" class="form-btn" onclick="checkPoints()">
+                        🔍 Kiểm tra điểm
+                    </button>
+                    
+                    <div id="pointsResult" class="hidden"></div>
+                </div>
+
+                <!-- QR Code Feature -->
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">QR Code cá nhân</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="qrPhone">Số điện thoại</label>
+                        <input type="tel" id="qrPhone" class="form-input" placeholder="0912345678">
+                    </div>
+                    
+                    <button type="button" class="form-btn secondary" onclick="generateQR()">
+                        📱 Tạo QR Code
+                    </button>
+                    
+                    <div id="qrResult" class="hidden"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="loyalty" class="footer">
+        <div class="footer-content">
+            <div class="loyalty-program">
+                <h3 class="loyalty-title">🎉 CHƯƠNG TRÌNH TÍCH ĐIỂM</h3>
+                <p class="loyalty-desc">Cứ 5 lần đến salon = 1 dịch vụ MIỄN PHÍ!</p>
+                <p>Tích điểm tự động • Tra cứu online 24/7 • Không cần thẻ giấy</p>
+            </div>
+
+            <div class="social-links">
+                <a href="#" class="social-link">📱 Line Official</a>
+                <a href="#" class="social-link">📸 Instagram</a>
+                <a href="#" class="social-link">🎵 TikTok</a>
+                <a href="#" class="social-link">👥 Facebook</a>
+            </div>
+
+            <div class="copyright">
+                © 2025 Elite Barbershop. Thiết kế bởi hệ thống quản lý thông minh.
+            </div>
+        </div>
+    </footer>
 
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     
     <script>
-        // Configuration - Thay đổi URL này thành Google Apps Script của bạn
+        // Configuration - CẬP NHẬT URL API CỦA BẠN TẠI ĐÂY
         const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwY8IHMLPubKUlr6cfPLISvKuKKitmfmMTMl7Mns-IyFXbkX7cl6Zkh-ZHeqExG6532/exec';
-        
-        // Debug mode - set to false in production
-        const DEBUG_MODE = true;
         
         // Utility Functions
         function showAlert(message, type = 'info') {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
+            alertDiv.innerHTML = message;
             
-            // Insert at top of container
-            const container = document.querySelector('.container');
-            container.insertBefore(alertDiv, container.firstChild);
+            // Insert at top of features section
+            const featuresSection = document.querySelector('.features');
+            featuresSection.insertBefore(alertDiv, featuresSection.firstChild);
             
-            // Auto remove after 5 seconds
+            // Auto remove after 6 seconds
             setTimeout(() => {
                 alertDiv.remove();
-            }, 5000);
-        }
-        
-        function debugLog(message, data = null) {
-            if (DEBUG_MODE) {
-                console.log('🔧 DEBUG:', message, data);
-            }
+            }, 6000);
         }
         
         function showSpinner(containerId) {
@@ -450,17 +966,43 @@
             return phone.replace(/\s/g, '').replace(/[^0-9]/g, '');
         }
         
-        // Check if API URL is configured
-        function checkAPIConfiguration() {
-            if (API_BASE_URL.includes('YOUR_SCRIPT_ID')) {
-                showAlert('⚠️ Cần cấu hình API URL trong code. Liên hệ admin để setup!', 'error');
-                return false;
-            }
-            return true;
-        }
+        // Set minimum date to tomorrow
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('bookingDate').min = tomorrow.toISOString().split('T')[0];
+            
+            // Welcome animation
+            setTimeout(() => {
+                showAlert('🎉 <strong>Chào mừng đến với Elite Barbershop!</strong><br>Trải nghiệm dịch vụ đẳng cấp với hệ thống tích điểm thông minh.', 'success');
+            }, 2000);
+        });
         
-        // Set minimum date to today
-        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(26, 26, 26, 0.98)';
+                navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                navbar.style.background = 'rgba(26, 26, 26, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
         
         // Form Submission
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
@@ -481,13 +1023,13 @@
             
             // Validation
             if (!validatePhone(formData.phone)) {
-                showAlert('Số điện thoại không hợp lệ!', 'error');
+                showAlert('❌ <strong>Số điện thoại không hợp lệ!</strong><br>Vui lòng nhập đúng định dạng số điện thoại.', 'error');
                 return;
             }
             
             // Show loading
             submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Đang xử lý...';
+            submitBtn.innerHTML = '⏳ Đang xử lý...';
             showSpinner('bookingResult');
             
             try {
@@ -497,42 +1039,45 @@
                     resultDiv.innerHTML = `
                         <div class="alert alert-success">
                             ✅ <strong>Đặt lịch thành công!</strong><br>
-                            📅 ${formData.date} lúc ${formData.time}<br>
-                            ✂️ ${formData.service}<br>
-                            📞 Chúng tôi sẽ gọi xác nhận trước 1 ngày
+                            📅 <strong>${formData.date}</strong> lúc <strong>${formData.time}</strong><br>
+                            ✂️ <strong>${formData.service}</strong><br>
+                            📞 Chúng tôi sẽ gọi xác nhận trước 1 ngày<br>
+                            🎁 Bạn sẽ được tích điểm sau khi hoàn thành dịch vụ!
                         </div>
                     `;
                     
-                    // Reset form
+                    // Reset form with animation
                     document.getElementById('bookingForm').reset();
-                    showAlert('Đặt lịch thành công! Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi.', 'success');
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('bookingDate').min = tomorrow.toISOString().split('T')[0];
+                    
+                    showAlert('🎊 <strong>Cảm ơn bạn đã tin tưởng Elite Barbershop!</strong><br>Hẹn gặp bạn tại salon để trải nghiệm dịch vụ đẳng cấp.', 'success');
+                    
+                    // Scroll to result
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
                     throw new Error('Không thể đặt lịch');
                 }
             } catch (error) {
-                console.error('Booking error:', error);
                 resultDiv.innerHTML = `
                     <div class="alert alert-error">
                         ❌ <strong>Có lỗi xảy ra!</strong><br>
-                        Vui lòng thử lại sau hoặc gọi trực tiếp: <strong>0123456789</strong>
+                        Vui lòng thử lại sau hoặc gọi trực tiếp:<br>
+                        📞 <strong><a href="tel:0123456789" style="color: inherit;">0123 456 789</a></strong>
                     </div>
                 `;
-                showAlert('Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại!', 'error');
+                showAlert('❌ <strong>Lỗi đặt lịch!</strong><br>Vui lòng thử lại hoặc gọi điện trực tiếp để được hỗ trợ.', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '📅 Đặt lịch ngay';
+                submitBtn.innerHTML = '📅 Đặt lịch ngay';
                 resultDiv.classList.remove('hidden');
             }
         });
         
-        // API Functions with CORS fix (using GET instead of POST)
+        // API Functions
         async function submitBooking(data) {
-            if (!checkAPIConfiguration()) return false;
-            
             try {
-                debugLog('Submitting booking via GET (CORS workaround)', data);
-                
-                // Use GET with URL parameters to avoid CORS preflight
                 const params = new URLSearchParams({
                     action: 'booking',
                     phone: data.phone,
@@ -548,98 +1093,34 @@
                     mode: 'cors'
                 });
                 
-                debugLog('Response status', response.status);
-                
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const result = await response.json();
-                debugLog('API response', result);
-                
-                if (result.success) {
-                    return true;
-                } else {
-                    throw new Error(result.message || 'Unknown API error');
-                }
+                return result.success;
             } catch (error) {
-                debugLog('Booking API error', error);
-                
-                if (DEBUG_MODE) {
-                    showAlert(`Debug: ${error.message}`, 'error');
-                }
-                
-                // Check specific error types
-                if (error.message.includes('Failed to fetch')) {
-                    showAlert('Không thể kết nối tới server. Kiểm tra internet và thử lại.', 'error');
-                } else if (error.message.includes('403')) {
-                    showAlert('Lỗi phân quyền API. Liên hệ admin để fix.', 'error');
-                } else if (error.message.includes('404')) {
-                    showAlert('API không tìm thấy. Kiểm tra cấu hình URL.', 'error');
-                }
-                
+                console.error('Booking API error:', error);
                 return false;
             }
         }
         
         async function getCustomerPoints(phone) {
-            if (!checkAPIConfiguration()) return null;
-            
             try {
-                debugLog('Getting customer points for', phone);
-                
                 const response = await fetch(`${API_BASE_URL}?action=customer&id=${phone}`, {
                     method: 'GET',
                     mode: 'cors'
                 });
-                
-                debugLog('Points response status', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const result = await response.json();
-                debugLog('Points API response', result);
-                
                 return result;
             } catch (error) {
-                debugLog('Points API error', error);
-                
-                if (DEBUG_MODE) {
-                    showAlert(`Debug: ${error.message}`, 'error');
-                }
-                
+                console.error('Points API error:', error);
                 return null;
-            }
-        }
-        
-        // Test API connection
-        async function testAPIConnection() {
-            if (!checkAPIConfiguration()) return false;
-            
-            try {
-                debugLog('Testing API connection...');
-                
-                const response = await fetch(`${API_BASE_URL}?action=customer&id=test`, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                debugLog('Test response status', response.status);
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    debugLog('Test API response', result);
-                    showAlert('✅ API kết nối thành công!', 'success');
-                    return true;
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                debugLog('API test failed', error);
-                showAlert(`❌ API test failed: ${error.message}`, 'error');
-                return false;
             }
         }
         
@@ -649,7 +1130,7 @@
             const resultDiv = document.getElementById('pointsResult');
             
             if (!validatePhone(phone)) {
-                showAlert('Số điện thoại không hợp lệ!', 'error');
+                showAlert('❌ <strong>Số điện thoại không hợp lệ!</strong><br>Vui lòng nhập đúng định dạng số điện thoại.', 'error');
                 return;
             }
             
@@ -662,62 +1143,74 @@
                     const points = customer.data.points || 0;
                     const progress = (points % 5) / 5 * 100;
                     const remaining = 5 - (points % 5);
+                    const completedCycles = Math.floor(points / 5);
                     
                     resultDiv.innerHTML = `
                         <div class="points-display">
-                            <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
+                            <h3>🎉 ${customer.data.name || 'Khách hàng VIP'}</h3>
                             <div class="points-number">${points}</div>
-                            <p>Lần đến tiệm</p>
+                            <p style="font-size: 1.2rem; margin-bottom: 1rem;">Lần đến Elite Barbershop</p>
                             
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <p style="margin-top: 1rem; font-size: 1.1rem;">
+                                    <strong>🎁 Còn ${remaining} lần nữa để nhận dịch vụ miễn phí!</strong>
+                                </p>
                             </div>
                             
-                            <p><strong>🎁 Còn ${remaining} lần nữa để được tặng dịch vụ miễn phí!</strong></p>
+                            ${points >= 5 ? `
+                                <div style="background: rgba(251, 191, 36, 0.2); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                                    <p style="color: #fbbf24; font-weight: bold; font-size: 1.3rem;">
+                                        🎊 Bạn đã đủ điều kiện đổi thưởng!
+                                    </p>
+                                    <p style="margin-top: 0.5rem;">Hãy đến salon để nhận dịch vụ miễn phí ngay!</p>
+                                </div>
+                            ` : ''}
                             
-                            ${points >= 5 ? '<p style="color: #00c851; font-weight: bold;">🎊 Bạn đã đủ điều kiện đổi thưởng!</p>' : ''}
+                            ${completedCycles > 0 ? `
+                                <p style="margin-top: 1rem; opacity: 0.8;">
+                                    🏆 Bạn đã nhận ${completedCycles} dịch vụ miễn phí
+                                </p>
+                            ` : ''}
                         </div>
                     `;
                 } else {
                     resultDiv.innerHTML = `
                         <div class="alert alert-info">
-                            ℹ️ <strong>Chưa tìm thấy thông tin</strong><br>
-                            Số điện thoại này chưa được đăng ký.<br>
-                            Hãy đến tiệm để tạo tài khoản nhé! 😊
+                            ℹ️ <strong>Chưa tìm thấy thông tin khách hàng</strong><br>
+                            Số điện thoại này chưa được đăng ký trong hệ thống.<br><br>
+                            🎯 <strong>Hãy đến Elite Barbershop để:</strong><br>
+                            • Đăng ký tài khoản tích điểm<br>
+                            • Nhận QR Code cá nhân<br>
+                            • Bắt đầu tích điểm ngay lần đầu!<br><br>
+                            📍 <strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP.HCM<br>
+                            📞 <strong>Hotline:</strong> <a href="tel:0123456789" style="color: inherit;">0123 456 789</a>
                         </div>
                     `;
                 }
             } catch (error) {
-                console.error('Points check error:', error);
                 resultDiv.innerHTML = `
                     <div class="alert alert-error">
                         ❌ <strong>Có lỗi xảy ra!</strong><br>
-                        Không thể kiểm tra điểm. Vui lòng thử lại sau.
+                        Không thể kiểm tra điểm. Vui lòng thử lại sau hoặc liên hệ salon.<br><br>
+                        📞 <strong>Hotline hỗ trợ:</strong> <a href="tel:0123456789" style="color: inherit;">0123 456 789</a>
                     </div>
                 `;
             } finally {
                 resultDiv.classList.remove('hidden');
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         
-        // Generate QR Code Function with proper DOM handling
+        // Generate QR Code Function
         async function generateQR() {
             const phone = formatPhone(document.getElementById('qrPhone').value);
             const resultDiv = document.getElementById('qrResult');
             
             if (!validatePhone(phone)) {
-                showAlert('Số điện thoại không hợp lệ!', 'error');
-                return;
-            }
-            
-            if (!checkAPIConfiguration()) {
-                resultDiv.innerHTML = `
-                    <div class="alert alert-error">
-                        ❌ <strong>Chưa cấu hình API</strong><br>
-                        Liên hệ admin để setup kết nối server.
-                    </div>
-                `;
-                resultDiv.classList.remove('hidden');
+                showAlert('❌ <strong>Số điện thoại không hợp lệ!</strong><br>Vui lòng nhập đúng định dạng số điện thoại.', 'error');
                 return;
             }
             
@@ -725,99 +1218,161 @@
             
             try {
                 // Check if customer exists first
-                debugLog('Checking customer for QR generation', phone);
                 const customer = await getCustomerPoints(phone);
                 
                 if (!customer || !customer.success) {
                     resultDiv.innerHTML = `
                         <div class="alert alert-info">
                             ℹ️ <strong>Chưa tìm thấy thông tin khách hàng</strong><br>
-                            Hãy đến tiệm để đăng ký tài khoản trước khi tạo QR Code nhé! 😊
+                            Bạn cần đăng ký tài khoản trước khi tạo QR Code.<br><br>
+                            🎯 <strong>Cách đăng ký:</strong><br>
+                            • Đến Elite Barbershop trực tiếp<br>
+                            • Nhân viên sẽ tạo tài khoản cho bạn<br>
+                            • Nhận QR Code ngay lập tức<br><br>
+                            📍 <strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP.HCM<br>
+                            📞 <strong>Hotline:</strong> <a href="tel:0123456789" style="color: inherit;">0123 456 789</a><br>
+                            ⏰ <strong>Giờ làm việc:</strong> 8:00 - 20:00 hàng ngày
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
                     return;
                 }
                 
-                // Create the complete HTML structure first
+                // Get QR from API or generate new one
+                let qrImageUrl = null;
+                try {
+                    const qrResponse = await fetch(`${API_BASE_URL}?action=qrcode&id=${phone}`);
+                    const qrResult = await qrResponse.json();
+                    
+                    if (qrResult.success && qrResult.data.qrLink) {
+                        qrImageUrl = qrResult.data.qrLink;
+                    }
+                } catch (error) {
+                    // Fallback: generate QR URL manually
+                    const qrData = `BARBERSHOP:${phone}:${customer.data.name || 'Customer'}`;
+                    qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+                }
+                
+                // Display QR code
                 resultDiv.innerHTML = `
                     <div class="qr-display">
-                        <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
-                        <p><strong>📱 QR Code cá nhân của bạn:</strong></p>
-                        <canvas id="qr-canvas" width="200" height="200" style="border: 2px solid #3498db; border-radius: 10px; margin: 20px auto; display: block; background: white;"></canvas>
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">
+                            🎉 ${customer.data.name || 'Khách hàng VIP'}
+                        </h3>
+                        <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                            <strong>📱 QR Code cá nhân của bạn</strong>
+                        </p>
+                        
+                        <img class="qr-image" 
+                             src="${qrImageUrl}" 
+                             alt="QR Code Elite Barbershop" 
+                             onload="handleQRSuccess()" 
+                             onerror="handleQRError()">
+                        
                         <div class="alert alert-success">
-                            ✅ <strong>Cách sử dụng:</strong><br>
+                            ✅ <strong>Hướng dẫn sử dụng QR Code:</strong><br>
                             • Chụp ảnh QR này và lưu vào điện thoại<br>
-                            • Mỗi lần đến tiệm, đưa QR cho nhân viên quét<br>
-                            • Tự động tích điểm, không cần nhớ số điện thoại!
+                            • Mỗi lần đến salon, đưa QR cho nhân viên quét<br>
+                            • Hệ thống tự động tích điểm cho bạn<br>
+                            • Nhanh chóng, tiện lợi, không cần nhớ số điện thoại!<br>
+                            • Theo dõi điểm tích lũy mọi lúc mọi nơi
                         </div>
+                        
+                        <button class="form-btn" onclick="downloadQR('${customer.data.name || 'Customer'}', '${phone}')" style="margin-top: 1rem;">
+                            💾 Tải xuống QR Code
+                        </button>
+                        
+                        <button class="form-btn secondary" onclick="shareQR()" style="margin-top: 0.5rem;">
+                            📤 Chia sẻ QR Code
+                        </button>
                     </div>
                 `;
                 
                 resultDiv.classList.remove('hidden');
                 
-                // Wait a bit for DOM to update
-                setTimeout(() => {
-                    const qrCanvas = document.getElementById('qr-canvas');
-                    if (!qrCanvas) {
-                        throw new Error('QR canvas element not found after DOM update');
-                    }
-                    
-                    const qrData = `BARBERSHOP:${phone}:${customer.data.name || 'Customer'}`;
-                    debugLog('Generating QR with data', qrData);
-                    
-                    // Check if QRCode library is loaded
-                    if (typeof QRCode === 'undefined') {
-                        throw new Error('QR Code library not loaded. Check internet connection.');
-                    }
-                    
-                    QRCode.toCanvas(qrCanvas, qrData, {
-                        width: 200,
-                        height: 200,
-                        colorDark: '#2c3e50',
-                        colorLight: '#ffffff',
-                        margin: 2,
-                        errorCorrectionLevel: 'M'
-                    }, function (error) {
-                        if (error) {
-                            console.error('QR Generation error:', error);
-                            resultDiv.innerHTML = `
-                                <div class="alert alert-error">
-                                    ❌ <strong>Lỗi tạo QR Code</strong><br>
-                                    ${DEBUG_MODE ? 'Debug: ' + error.message : 'Vui lòng thử lại sau.'}
-                                </div>
-                            `;
-                        } else {
-                            debugLog('QR Code generated successfully');
-                            // Add download button
-                            const downloadBtn = document.createElement('button');
-                            downloadBtn.className = 'btn';
-                            downloadBtn.style.marginTop = '10px';
-                            downloadBtn.innerHTML = '💾 Tải xuống QR';
-                            downloadBtn.onclick = function() {
-                                const link = document.createElement('a');
-                                link.download = `QR_${customer.data.name || 'Customer'}_${phone}.png`;
-                                link.href = qrCanvas.toDataURL();
-                                link.click();
-                            };
-                            
-                            const qrDisplay = resultDiv.querySelector('.qr-display');
-                            qrDisplay.appendChild(downloadBtn);
-                        }
-                    });
-                }, 100); // 100ms delay to ensure DOM is ready
+                // Store data for download function
+                window.currentQRUrl = qrImageUrl;
+                window.currentCustomer = customer.data;
+                
+                // Scroll to result
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
             } catch (error) {
                 console.error('QR generation error:', error);
-                debugLog('QR error details', error);
                 
                 resultDiv.innerHTML = `
                     <div class="alert alert-error">
                         ❌ <strong>Có lỗi xảy ra!</strong><br>
-                        ${DEBUG_MODE ? 'Debug: ' + error.message : 'Không thể tạo QR Code. Vui lòng thử lại sau.'}
+                        Không thể tạo QR Code. Vui lòng thử lại sau hoặc liên hệ salon.<br><br>
+                        📞 <strong>Hotline hỗ trợ:</strong> <a href="tel:0123456789" style="color: inherit;">0123 456 789</a>
                     </div>
                 `;
                 resultDiv.classList.remove('hidden');
+            }
+        }
+        
+        // QR Code helper functions
+        function handleQRSuccess() {
+            console.log('QR Code loaded successfully');
+        }
+        
+        function handleQRError() {
+            const qrImage = document.querySelector('.qr-image');
+            if (qrImage) {
+                qrImage.style.display = 'none';
+                qrImage.parentNode.innerHTML += `
+                    <div class="alert alert-warning">
+                        ⚠️ <strong>Không thể tải QR Code</strong><br>
+                        Vui lòng kiểm tra kết nối internet và thử lại.
+                    </div>
+                `;
+            }
+        }
+        
+        // Download QR function
+        function downloadQR(customerName, phone) {
+            try {
+                if (window.currentQRUrl) {
+                    const link = document.createElement('a');
+                    link.download = `QR_EliteBarbershop_${customerName.replace(/\s+/g, '_')}_${phone}.png`;
+                    link.href = window.currentQRUrl;
+                    link.click();
+                    
+                    showAlert('📱 <strong>QR Code đã được tải xuống!</strong><br>Hãy lưu vào thư mục dễ tìm để sử dụng khi đến salon.', 'success');
+                } else {
+                    showAlert('❌ Không thể tải xuống QR Code. Vui lòng thử tạo lại.', 'error');
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                showAlert('❌ Lỗi khi tải xuống. Vui lòng thử lại.', 'error');
+            }
+        }
+        
+        // Share QR function
+        function shareQR() {
+            if (navigator.share && window.currentQRUrl) {
+                navigator.share({
+                    title: 'QR Code - Elite Barbershop',
+                    text: 'QR Code tích điểm tại Elite Barbershop - Salon tóc cao cấp',
+                    url: window.currentQRUrl
+                }).then(() => {
+                    showAlert('📤 <strong>Chia sẻ QR Code thành công!</strong>', 'success');
+                }).catch((error) => {
+                    console.error('Share error:', error);
+                    fallbackShare();
+                });
+            } else {
+                fallbackShare();
+            }
+        }
+        
+        function fallbackShare() {
+            if (window.currentQRUrl) {
+                navigator.clipboard.writeText(window.currentQRUrl).then(() => {
+                    showAlert('📋 <strong>Link QR Code đã được sao chép!</strong><br>Bạn có thể dán và chia sẻ link này.', 'success');
+                }).catch(() => {
+                    showAlert('💡 Vui lòng tải xuống QR Code để chia sẻ.', 'info');
+                });
             }
         }
         
@@ -832,28 +1387,27 @@
             });
         });
         
-        // Show welcome message and test API
-        document.addEventListener('DOMContentLoaded', function() {
-            showAlert('🎉 Chào mừng đến với hệ thống đặt lịch thông minh!', 'success');
-            
-            // Add debug panel if in debug mode
-            if (DEBUG_MODE) {
-                const debugPanel = document.createElement('div');
-                debugPanel.innerHTML = `
-                    <div style="position: fixed; top: 10px; right: 10px; background: #000; color: #0f0; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; z-index: 9999;">
-                        🔧 DEBUG MODE<br>
-                        <button onclick="testAPIConnection()" style="background: #333; color: #0f0; border: 1px solid #0f0; padding: 5px; margin-top: 5px;">Test API</button><br>
-                        <button onclick="console.clear()" style="background: #333; color: #0f0; border: 1px solid #0f0; padding: 5px; margin-top: 5px;">Clear Log</button>
-                    </div>
-                `;
-                document.body.appendChild(debugPanel);
-                
-                // Auto-test API connection
-                setTimeout(() => {
-                    debugLog('Auto-testing API connection...');
-                    testAPIConnection();
-                }, 2000);
-            }
+        // Add subtle animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all cards
+        document.querySelectorAll('.service-card, .feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
         });
     </script>
 </body>
