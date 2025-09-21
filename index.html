@@ -408,7 +408,10 @@
     
     <script>
         // Configuration - Thay đổi URL này thành Google Apps Script của bạn
-        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxqvDsm8bm-LaaGSkXa5yzeUryrW9H8WLOEuBq2j2z6o4AH9jigMkASYI_jnxt2xM6n/exec';
+        const API_BASE_URL = 'https://script.google.com/macros/library/d/1tag8OJy46nka8WDG9auimCK_Orbkx8UBfMM33PVUSj8RJgmEDaC5q-8e/2';
+        
+        // Debug mode - set to false in production
+        const DEBUG_MODE = true;
         
         // Utility Functions
         function showAlert(message, type = 'info') {
@@ -426,6 +429,12 @@
             }, 5000);
         }
         
+        function debugLog(message, data = null) {
+            if (DEBUG_MODE) {
+                console.log('🔧 DEBUG:', message, data);
+            }
+        }
+        
         function showSpinner(containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '<div class="spinner"></div>';
@@ -439,6 +448,15 @@
         
         function formatPhone(phone) {
             return phone.replace(/\s/g, '').replace(/[^0-9]/g, '');
+        }
+        
+        // Check if API URL is configured
+        function checkAPIConfiguration() {
+            if (API_BASE_URL.includes('YOUR_SCRIPT_ID')) {
+                showAlert('⚠️ Cần cấu hình API URL trong code. Liên hệ admin để setup!', 'error');
+                return false;
+            }
+            return true;
         }
         
         // Set minimum date to today
@@ -507,33 +525,121 @@
             }
         });
         
-        // API Functions
+        // API Functions with CORS fix (using GET instead of POST)
         async function submitBooking(data) {
+            if (!checkAPIConfiguration()) return false;
+            
             try {
-                const response = await fetch(`${API_BASE_URL}?action=booking`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
+                debugLog('Submitting booking via GET (CORS workaround)', data);
+                
+                // Use GET with URL parameters to avoid CORS preflight
+                const params = new URLSearchParams({
+                    action: 'booking',
+                    phone: data.phone,
+                    name: data.name,
+                    date: data.date,
+                    time: data.time,
+                    service: data.service,
+                    notes: data.notes || ''
                 });
                 
+                const response = await fetch(`${API_BASE_URL}?${params.toString()}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                debugLog('Response status', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const result = await response.json();
-                return result.success;
+                debugLog('API response', result);
+                
+                if (result.success) {
+                    return true;
+                } else {
+                    throw new Error(result.message || 'Unknown API error');
+                }
             } catch (error) {
-                console.error('API Error:', error);
+                debugLog('Booking API error', error);
+                
+                if (DEBUG_MODE) {
+                    showAlert(`Debug: ${error.message}`, 'error');
+                }
+                
+                // Check specific error types
+                if (error.message.includes('Failed to fetch')) {
+                    showAlert('Không thể kết nối tới server. Kiểm tra internet và thử lại.', 'error');
+                } else if (error.message.includes('403')) {
+                    showAlert('Lỗi phân quyền API. Liên hệ admin để fix.', 'error');
+                } else if (error.message.includes('404')) {
+                    showAlert('API không tìm thấy. Kiểm tra cấu hình URL.', 'error');
+                }
+                
                 return false;
             }
         }
         
         async function getCustomerPoints(phone) {
+            if (!checkAPIConfiguration()) return null;
+            
             try {
-                const response = await fetch(`${API_BASE_URL}?action=customer&id=${phone}`);
+                debugLog('Getting customer points for', phone);
+                
+                const response = await fetch(`${API_BASE_URL}?action=customer&id=${phone}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                debugLog('Points response status', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const result = await response.json();
+                debugLog('Points API response', result);
+                
                 return result;
             } catch (error) {
-                console.error('API Error:', error);
+                debugLog('Points API error', error);
+                
+                if (DEBUG_MODE) {
+                    showAlert(`Debug: ${error.message}`, 'error');
+                }
+                
                 return null;
+            }
+        }
+        
+        // Test API connection
+        async function testAPIConnection() {
+            if (!checkAPIConfiguration()) return false;
+            
+            try {
+                debugLog('Testing API connection...');
+                
+                const response = await fetch(`${API_BASE_URL}?action=customer&id=test`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                debugLog('Test response status', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    debugLog('Test API response', result);
+                    showAlert('✅ API kết nối thành công!', 'success');
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                debugLog('API test failed', error);
+                showAlert(`❌ API test failed: ${error.message}`, 'error');
+                return false;
             }
         }
         
@@ -594,7 +700,7 @@
             }
         }
         
-        // Generate QR Code Function
+        // Generate QR Code Function with proper DOM handling
         async function generateQR() {
             const phone = formatPhone(document.getElementById('qrPhone').value);
             const resultDiv = document.getElementById('qrResult');
@@ -604,10 +710,22 @@
                 return;
             }
             
+            if (!checkAPIConfiguration()) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ <strong>Chưa cấu hình API</strong><br>
+                        Liên hệ admin để setup kết nối server.
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+            
             showSpinner('qrResult');
             
             try {
                 // Check if customer exists first
+                debugLog('Checking customer for QR generation', phone);
                 const customer = await getCustomerPoints(phone);
                 
                 if (!customer || !customer.success) {
@@ -621,58 +739,84 @@
                     return;
                 }
                 
-                // Generate QR Code
-                const qrContainer = document.getElementById('qrcode');
-                qrContainer.innerHTML = ''; // Clear previous QR
+                // Create the complete HTML structure first
+                resultDiv.innerHTML = `
+                    <div class="qr-display">
+                        <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
+                        <p><strong>📱 QR Code cá nhân của bạn:</strong></p>
+                        <canvas id="qr-canvas" width="200" height="200" style="border: 2px solid #3498db; border-radius: 10px; margin: 20px auto; display: block; background: white;"></canvas>
+                        <div class="alert alert-success">
+                            ✅ <strong>Cách sử dụng:</strong><br>
+                            • Chụp ảnh QR này và lưu vào điện thoại<br>
+                            • Mỗi lần đến tiệm, đưa QR cho nhân viên quét<br>
+                            • Tự động tích điểm, không cần nhớ số điện thoại!
+                        </div>
+                    </div>
+                `;
                 
-                const qrData = `BARBERSHOP:${phone}:${customer.data.name || 'Customer'}`;
+                resultDiv.classList.remove('hidden');
                 
-                QRCode.toCanvas(qrContainer, qrData, {
-                    width: 200,
-                    height: 200,
-                    colorDark: '#2c3e50',
-                    colorLight: '#ffffff',
-                    margin: 2
-                }, function (error) {
-                    if (error) {
-                        console.error('QR Generation error:', error);
-                        showAlert('Không thể tạo QR Code. Vui lòng thử lại!', 'error');
-                    } else {
-                        resultDiv.innerHTML = `
-                            <div class="qr-display">
-                                <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
-                                <p><strong>📱 QR Code cá nhân của bạn:</strong></p>
-                                <div id="qrcode"></div>
-                                <div class="alert alert-success">
-                                    ✅ <strong>Cách sử dụng:</strong><br>
-                                    • Chụp ảnh QR này và lưu vào điện thoại<br>
-                                    • Mỗi lần đến tiệm, đưa QR cho nhân viên quét<br>
-                                    • Tự động tích điểm, không cần nhớ số điện thoại!
-                                </div>
-                            </div>
-                        `;
-                        
-                        // Re-generate QR in the new container
-                        const newQrContainer = resultDiv.querySelector('#qrcode');
-                        QRCode.toCanvas(newQrContainer, qrData, {
-                            width: 200,
-                            height: 200,
-                            colorDark: '#2c3e50',
-                            colorLight: '#ffffff',
-                            margin: 2
-                        });
+                // Wait a bit for DOM to update
+                setTimeout(() => {
+                    const qrCanvas = document.getElementById('qr-canvas');
+                    if (!qrCanvas) {
+                        throw new Error('QR canvas element not found after DOM update');
                     }
-                });
+                    
+                    const qrData = `BARBERSHOP:${phone}:${customer.data.name || 'Customer'}`;
+                    debugLog('Generating QR with data', qrData);
+                    
+                    // Check if QRCode library is loaded
+                    if (typeof QRCode === 'undefined') {
+                        throw new Error('QR Code library not loaded. Check internet connection.');
+                    }
+                    
+                    QRCode.toCanvas(qrCanvas, qrData, {
+                        width: 200,
+                        height: 200,
+                        colorDark: '#2c3e50',
+                        colorLight: '#ffffff',
+                        margin: 2,
+                        errorCorrectionLevel: 'M'
+                    }, function (error) {
+                        if (error) {
+                            console.error('QR Generation error:', error);
+                            resultDiv.innerHTML = `
+                                <div class="alert alert-error">
+                                    ❌ <strong>Lỗi tạo QR Code</strong><br>
+                                    ${DEBUG_MODE ? 'Debug: ' + error.message : 'Vui lòng thử lại sau.'}
+                                </div>
+                            `;
+                        } else {
+                            debugLog('QR Code generated successfully');
+                            // Add download button
+                            const downloadBtn = document.createElement('button');
+                            downloadBtn.className = 'btn';
+                            downloadBtn.style.marginTop = '10px';
+                            downloadBtn.innerHTML = '💾 Tải xuống QR';
+                            downloadBtn.onclick = function() {
+                                const link = document.createElement('a');
+                                link.download = `QR_${customer.data.name || 'Customer'}_${phone}.png`;
+                                link.href = qrCanvas.toDataURL();
+                                link.click();
+                            };
+                            
+                            const qrDisplay = resultDiv.querySelector('.qr-display');
+                            qrDisplay.appendChild(downloadBtn);
+                        }
+                    });
+                }, 100); // 100ms delay to ensure DOM is ready
                 
             } catch (error) {
                 console.error('QR generation error:', error);
+                debugLog('QR error details', error);
+                
                 resultDiv.innerHTML = `
                     <div class="alert alert-error">
                         ❌ <strong>Có lỗi xảy ra!</strong><br>
-                        Không thể tạo QR Code. Vui lòng thử lại sau.
+                        ${DEBUG_MODE ? 'Debug: ' + error.message : 'Không thể tạo QR Code. Vui lòng thử lại sau.'}
                     </div>
                 `;
-            } finally {
                 resultDiv.classList.remove('hidden');
             }
         }
@@ -688,9 +832,28 @@
             });
         });
         
-        // Show welcome message
+        // Show welcome message and test API
         document.addEventListener('DOMContentLoaded', function() {
-            showAlert('🎉 Chào mừng đến với hệ thống đặt lịch thông minh! Hãy đặt lịch và tích điểm để nhận ưu đãi nhé!', 'success');
+            showAlert('🎉 Chào mừng đến với hệ thống đặt lịch thông minh!', 'success');
+            
+            // Add debug panel if in debug mode
+            if (DEBUG_MODE) {
+                const debugPanel = document.createElement('div');
+                debugPanel.innerHTML = `
+                    <div style="position: fixed; top: 10px; right: 10px; background: #000; color: #0f0; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; z-index: 9999;">
+                        🔧 DEBUG MODE<br>
+                        <button onclick="testAPIConnection()" style="background: #333; color: #0f0; border: 1px solid #0f0; padding: 5px; margin-top: 5px;">Test API</button><br>
+                        <button onclick="console.clear()" style="background: #333; color: #0f0; border: 1px solid #0f0; padding: 5px; margin-top: 5px;">Clear Log</button>
+                    </div>
+                `;
+                document.body.appendChild(debugPanel);
+                
+                // Auto-test API connection
+                setTimeout(() => {
+                    debugLog('Auto-testing API connection...');
+                    testAPIConnection();
+                }, 2000);
+            }
         });
     </script>
 </body>
