@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✂️ TÓC ĐẸP SALON - Hệ thống đặt lịch & tích điểm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        /* Social Links */
+        .social-links {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-btn.line { background: linear-gradient(45deg, #00c300, #00b300); }
+        .social-btn.ig { background: linear-gradient(45deg, #fd5949, #d6249f); }
+        .social-btn.tiktok { background: linear-gradient(45deg, #25f4ee, #fe2c55); }
+        .social-btn.fb { background: linear-gradient(45deg, #4267b2, #365899); }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Points Display */
+        .points-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .points-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #00c851, #007e33);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        /* QR Display */
+        .qr-display {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            display: none;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hidden elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .social-links {
+                flex-wrap: wrap;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">✂️</div>
+            <h1>TÓC ĐẸP SALON</h1>
+            <p class="subtitle">Hệ thống đặt lịch & tích điểm thông minh</p>
+            
+            <!-- Social Media Links -->
+            <div class="social-links">
+                <a href="#" class="social-btn line">📱 Line Official</a>
+                <a href="#" class="social-btn ig">📸 Instagram</a>
+                <a href="#" class="social-btn tiktok">🎵 TikTok</a>
+                <a href="#" class="social-btn fb">👥 Facebook</a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Đặt lịch hẹn -->
+            <div class="card">
+                <div class="card-icon">📅</div>
+                <h2>Đặt lịch hẹn</h2>
+                
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="customerName">Họ tên *</label>
+                        <input type="text" id="customerName" required placeholder="Nhập họ tên đầy đủ">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerPhone">Số điện thoại *</label>
+                        <input type="tel" id="customerPhone" required placeholder="0912345678">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookingDate">Ngày hẹn *</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookingTime">Giờ hẹn *</label>
+                        <select id="bookingTime" required>
+                            <option value="">Chọn giờ</option>
+                            <option value="08:00">08:00</option>
+                            <option value="08:30">08:30</option>
+                            <option value="09:00">09:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:00">10:00</option>
+                            <option value="10:30">10:30</option>
+                            <option value="14:00">14:00</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:00">15:00</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:00">16:00</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:00">17:00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">Dịch vụ *</label>
+                        <select id="service" required>
+                            <option value="">Chọn dịch vụ</option>
+                            <option value="Cắt tóc nam">Cắt tóc nam - 100k</option>
+                            <option value="Cắt tóc nữ">Cắt tóc nữ - 150k</option>
+                            <option value="Gội + cắt + sấy">Gội + cắt + sấy - 200k</option>
+                            <option value="Nhuộm tóc">Nhuộm tóc - 300k</option>
+                            <option value="Uốn tóc">Uốn tóc - 400k</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Ghi chú</label>
+                        <textarea id="notes" rows="3" placeholder="Yêu cầu đặc biệt (tùy chọn)"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBooking">
+                        📅 Đặt lịch ngay
+                    </button>
+                </form>
+                
+                <div id="bookingResult" class="hidden"></div>
+            </div>
+            
+            <!-- Tra cứu điểm thưởng -->
+            <div class="card">
+                <div class="card-icon">🎁</div>
+                <h2>Tra cứu điểm thưởng</h2>
+                
+                <div class="form-group">
+                    <label for="pointsPhone">Số điện thoại</label>
+                    <input type="tel" id="pointsPhone" placeholder="0912345678">
+                </div>
+                
+                <button type="button" class="btn" onclick="checkPoints()">
+                    🔍 Kiểm tra điểm
+                </button>
+                
+                <div id="pointsResult" class="hidden"></div>
+            </div>
+            
+            <!-- QR Code cá nhân -->
+            <div class="card">
+                <div class="card-icon">📱</div>
+                <h2>QR Code cá nhân</h2>
+                
+                <div class="form-group">
+                    <label for="qrPhone">Số điện thoại</label>
+                    <input type="tel" id="qrPhone" placeholder="0912345678">
+                </div>
+                
+                <button type="button" class="btn" onclick="generateQR()">
+                    📱 Tạo QR Code
+                </button>
+                
+                <div id="qrResult" class="hidden">
+                    <div class="qr-display">
+                        <div id="qrcode"></div>
+                        <p>📱 <strong>Lưu QR này vào điện thoại</strong></p>
+                        <p>Đưa cho nhân viên để tích điểm nhanh!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    
+    <script>
+        // Configuration - Thay đổi URL này thành Google Apps Script của bạn
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxqvDsm8bm-LaaGSkXa5yzeUryrW9H8WLOEuBq2j2z6o4AH9jigMkASYI_jnxt2xM6n/exec';
+        
+        // Utility Functions
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            // Insert at top of container
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        function showSpinner(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '<div class="spinner"></div>';
+            container.classList.remove('hidden');
+        }
+        
+        function validatePhone(phone) {
+            const phoneRegex = /^[0-9]{10,11}$/;
+            return phoneRegex.test(phone.replace(/\s/g, ''));
+        }
+        
+        function formatPhone(phone) {
+            return phone.replace(/\s/g, '').replace(/[^0-9]/g, '');
+        }
+        
+        // Set minimum date to today
+        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+        
+        // Form Submission
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBooking');
+            const resultDiv = document.getElementById('bookingResult');
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('customerName').value.trim(),
+                phone: formatPhone(document.getElementById('customerPhone').value),
+                date: document.getElementById('bookingDate').value,
+                time: document.getElementById('bookingTime').value,
+                service: document.getElementById('service').value,
+                notes: document.getElementById('notes').value.trim()
+            };
+            
+            // Validation
+            if (!validatePhone(formData.phone)) {
+                showAlert('Số điện thoại không hợp lệ!', 'error');
+                return;
+            }
+            
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Đang xử lý...';
+            showSpinner('bookingResult');
+            
+            try {
+                const success = await submitBooking(formData);
+                
+                if (success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ <strong>Đặt lịch thành công!</strong><br>
+                            📅 ${formData.date} lúc ${formData.time}<br>
+                            ✂️ ${formData.service}<br>
+                            📞 Chúng tôi sẽ gọi xác nhận trước 1 ngày
+                        </div>
+                    `;
+                    
+                    // Reset form
+                    document.getElementById('bookingForm').reset();
+                    showAlert('Đặt lịch thành công! Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi.', 'success');
+                } else {
+                    throw new Error('Không thể đặt lịch');
+                }
+            } catch (error) {
+                console.error('Booking error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ <strong>Có lỗi xảy ra!</strong><br>
+                        Vui lòng thử lại sau hoặc gọi trực tiếp: <strong>0123456789</strong>
+                    </div>
+                `;
+                showAlert('Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại!', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📅 Đặt lịch ngay';
+                resultDiv.classList.remove('hidden');
+            }
+        });
+        
+        // API Functions
+        async function submitBooking(data) {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=booking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                return result.success;
+            } catch (error) {
+                console.error('API Error:', error);
+                return false;
+            }
+        }
+        
+        async function getCustomerPoints(phone) {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=customer&id=${phone}`);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                return null;
+            }
+        }
+        
+        // Check Points Function
+        async function checkPoints() {
+            const phone = formatPhone(document.getElementById('pointsPhone').value);
+            const resultDiv = document.getElementById('pointsResult');
+            
+            if (!validatePhone(phone)) {
+                showAlert('Số điện thoại không hợp lệ!', 'error');
+                return;
+            }
+            
+            showSpinner('pointsResult');
+            
+            try {
+                const customer = await getCustomerPoints(phone);
+                
+                if (customer && customer.success) {
+                    const points = customer.data.points || 0;
+                    const progress = (points % 5) / 5 * 100;
+                    const remaining = 5 - (points % 5);
+                    
+                    resultDiv.innerHTML = `
+                        <div class="points-display">
+                            <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
+                            <div class="points-number">${points}</div>
+                            <p>Lần đến tiệm</p>
+                            
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                            
+                            <p><strong>🎁 Còn ${remaining} lần nữa để được tặng dịch vụ miễn phí!</strong></p>
+                            
+                            ${points >= 5 ? '<p style="color: #00c851; font-weight: bold;">🎊 Bạn đã đủ điều kiện đổi thưởng!</p>' : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            ℹ️ <strong>Chưa tìm thấy thông tin</strong><br>
+                            Số điện thoại này chưa được đăng ký.<br>
+                            Hãy đến tiệm để tạo tài khoản nhé! 😊
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Points check error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ <strong>Có lỗi xảy ra!</strong><br>
+                        Không thể kiểm tra điểm. Vui lòng thử lại sau.
+                    </div>
+                `;
+            } finally {
+                resultDiv.classList.remove('hidden');
+            }
+        }
+        
+        // Generate QR Code Function
+        async function generateQR() {
+            const phone = formatPhone(document.getElementById('qrPhone').value);
+            const resultDiv = document.getElementById('qrResult');
+            
+            if (!validatePhone(phone)) {
+                showAlert('Số điện thoại không hợp lệ!', 'error');
+                return;
+            }
+            
+            showSpinner('qrResult');
+            
+            try {
+                // Check if customer exists first
+                const customer = await getCustomerPoints(phone);
+                
+                if (!customer || !customer.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            ℹ️ <strong>Chưa tìm thấy thông tin khách hàng</strong><br>
+                            Hãy đến tiệm để đăng ký tài khoản trước khi tạo QR Code nhé! 😊
+                        </div>
+                    `;
+                    resultDiv.classList.remove('hidden');
+                    return;
+                }
+                
+                // Generate QR Code
+                const qrContainer = document.getElementById('qrcode');
+                qrContainer.innerHTML = ''; // Clear previous QR
+                
+                const qrData = `BARBERSHOP:${phone}:${customer.data.name || 'Customer'}`;
+                
+                QRCode.toCanvas(qrContainer, qrData, {
+                    width: 200,
+                    height: 200,
+                    colorDark: '#2c3e50',
+                    colorLight: '#ffffff',
+                    margin: 2
+                }, function (error) {
+                    if (error) {
+                        console.error('QR Generation error:', error);
+                        showAlert('Không thể tạo QR Code. Vui lòng thử lại!', 'error');
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="qr-display">
+                                <h3>🎉 ${customer.data.name || 'Khách hàng'}</h3>
+                                <p><strong>📱 QR Code cá nhân của bạn:</strong></p>
+                                <div id="qrcode"></div>
+                                <div class="alert alert-success">
+                                    ✅ <strong>Cách sử dụng:</strong><br>
+                                    • Chụp ảnh QR này và lưu vào điện thoại<br>
+                                    • Mỗi lần đến tiệm, đưa QR cho nhân viên quét<br>
+                                    • Tự động tích điểm, không cần nhớ số điện thoại!
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Re-generate QR in the new container
+                        const newQrContainer = resultDiv.querySelector('#qrcode');
+                        QRCode.toCanvas(newQrContainer, qrData, {
+                            width: 200,
+                            height: 200,
+                            colorDark: '#2c3e50',
+                            colorLight: '#ffffff',
+                            margin: 2
+                        });
+                    }
+                });
+                
+            } catch (error) {
+                console.error('QR generation error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ <strong>Có lỗi xảy ra!</strong><br>
+                        Không thể tạo QR Code. Vui lòng thử lại sau.
+                    </div>
+                `;
+            } finally {
+                resultDiv.classList.remove('hidden');
+            }
+        }
+        
+        // Auto-format phone number input
+        document.querySelectorAll('input[type="tel"]').forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                e.target.value = value;
+            });
+        });
+        
+        // Show welcome message
+        document.addEventListener('DOMContentLoaded', function() {
+            showAlert('🎉 Chào mừng đến với hệ thống đặt lịch thông minh! Hãy đặt lịch và tích điểm để nhận ưu đãi nhé!', 'success');
+        });
+    </script>
+</body>
+</html>
